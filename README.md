@@ -11,6 +11,7 @@ This is a responsive webpage built according to the Figma design. The project is
 1. Clone the repository to your local machine.
 2. Download packages: npm i
 3. Run the project in development mode: npm run dev
+4. You can also run the project in a docker container by running the project in build mode: npm run build. Then create a docker image, then run it
 
 ## Technologies Used:
 - HTML5
@@ -18,6 +19,8 @@ This is a responsive webpage built according to the Figma design. The project is
 - JavaScript
 - Webpack
 - GULP
+- Docker
+- NGINX
 
 ## Dependencies:
 Please ensure you have the latest versions of Chrome, Firefox, or Edge browsers for the best viewing experience. Also, make sure that all packages have been installed successfully.
