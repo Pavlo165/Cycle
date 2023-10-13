@@ -1,0 +1,113 @@
+// Заголовки, общие БЄМ блоки и проче...
+
+//title
+.title {
+    color: $darkColor;
+	font-weight: 700;
+	@include adaptiveValue("font-size", 30, 24);
+}
+
+// text
+.text {
+    line-height: 1.5;
+    @media (max-width: $mobileSmall) {
+        line-height: 1.2;
+    }
+}
+
+//.section-header
+.section-header {
+    // .section-header__text
+    &__label {
+        line-height: math.div(75, 60);
+        color: $mainColor;
+        &:not(:last-child) {
+            margin-bottom: em(32, 25);
+        }
+    }
+    // .section-header__title
+    &__title {
+        //color: #FFF;
+        @include adaptiveValue("font-size", 60, 28);
+        font-weight: 700;
+        color: $darkColor;
+        max-width: rem(480);
+        &:not(:last-child) {
+            margin-bottom: em(132, 60);
+            @media (max-width: $mobile) {
+                margin-bottom: em(45, 60);
+            }
+        }
+        &_big {
+            max-width: rem(890);
+        }
+    }
+
+    &_lite {
+        .section-header__text {
+            color: #e3e6ec;
+        }
+
+        .section-header__title {
+            color: #fff;
+        }
+    }
+
+    &__text {
+        line-height: math.div(45, 25);
+        max-width: 530px;
+        @media (max-width: $mobile) {
+            line-height: math.div(35, 25);
+        }
+    }
+}
+
+//.services
+.services {
+    // .services__item
+    &__item {
+        display: flex;
+        @include adaptiveValue('gap', 50, 20);
+        align-items: center;
+        &:not(:last-child) {
+            @include adaptiveValue('padding-bottom', 60, 20);
+        }
+    }
+
+    // .services__icon
+    &__icon {
+        flex: 0 1 rem(60);
+        img {
+            max-width: 100%;
+            height: auto;
+            
+        }
+    }
+
+    // .services__body
+    // &__body {
+        
+    // }
+
+    // .services__title
+    &__title {
+        color: $darkColor;
+		font-weight: 700;
+		@include adaptiveValue("font-size", 30, 24);
+		line-height: math.div(38, 30);
+
+        &:not(:last-child) {
+            @include adaptiveValue('margin-bottom', 32, 8);
+        }
+    }
+
+    // .services__text
+    &__text {
+        line-height: 1.5;
+        @media (max-width: $mobileSmall) {
+            line-height: 1.2;
+        }
+    }
+}
+
+//*****************

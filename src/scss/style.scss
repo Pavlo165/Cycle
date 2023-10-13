@@ -1,0 +1,976 @@
+@use "sass:math";
+
+// Подключение миксинов ===========================================================================================================================================================================================================================================================================
+@import "base/mixins";
+
+// Подключение шрифтов ===========================================================================================================================================================================================================================================================================
+//&display=swap - добавить при подключении через плагин
+@import url(https://fonts.googleapis.com/css?family=Quicksand:regular,700&display=swap);
+
+// Подключить если есть локальные файлы шрифтов
+//@import "fonts/fonts";
+
+// Подключение иконочных шрифтов ==============================================================================================================================================================================================================================================================================
+// Подключить если есть файл иконочного шрифта
+//@import "fonts/icons";
+
+// Шрифт по умолчанию ==============================================================================================================================================================================================================================================================================
+$fontFamily: "Quicksand";
+$fontSize: rem(25); // где 14(px) - размер шрифта по умолчанию из макета
+
+// Основные цвета
+$mainColor: #6a6e77; // Цвет шрифта по умолчанию
+$darkColor: #1c1f25;
+
+// НАСТРОЙКИ ===============================================================================================================================================================================================================================================================================================
+// Минимальная ширина страницы
+$minWidth: 320;
+// Ширина полотна (макета)
+$maxWidth: 1920;
+// Ширина ограничивающего контейнера (0 = нет ограничения)
+$maxWidthContainer: 0;
+// Общий отступ у контейнера
+// (30 = по 15px слева и справа, 0 = нет отступа)
+$containerPadding: 480;
+
+// Ширина срабатывания первого брейкпоинта
+$containerWidth: $maxWidthContainer + $containerPadding;
+
+// Брейк-поинты
+$pc: em($containerWidth); // ПК, ноутбуки, некоторые планшеты в горизонтальном положении
+$tablet: em(991.98); // Планшеты, некоторые телефоны в горизонтальном положении
+$mobile: em(767.98); // Телефоны L
+$mobileSmall: em(479.98); // Телефоны S
+
+// Тип адаптива:
+// 1 = отзывчивость (у контейнера нет брейкпоинтов),
+// 2 = по брейк-поинтам (контейнер меняет свою ширину по брейк-поинтам)
+$responsiveType: 1;
+
+// Обнуление и общие параметры ============================================================================================================================================================================================== =============================================================================================== ===============================================================================================
+@import "base/null";
+
+body {
+	// Скролл заблокирован
+	.lock & {
+		overflow: hidden;
+		touch-action: none;
+	}
+	// Сайт загружен
+	.loaded & {
+		opacity: 1;
+		transition: opacity 0.8s;
+	}
+
+	@include adaptiveValue("font-size", 25, 18);
+	color: $mainColor;
+}
+// Оболочка ============================================================================================================================================================================================================================================================================================================================================================================================================================================
+.wrapper {
+	min-height: 100%;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	// Прижимаем footer
+	> main {
+		flex: 1 1 auto;
+	}
+	// Фикс для слайдеров
+	> * {
+		min-width: 0;
+	}
+}
+// Ограничивающий контейнер ======================================================================================================================================================================================================================
+
+/*
+(i) Стили будут применяться ко 
+всем классам содержащим *__container
+Например header__container, main__container и т.д.
+Снипет (HTML): cnt
+*/
+@if ($responsiveType==1) {
+	// Отзывчивая
+	[class*="__container"] {
+		flex-grow: 1;
+		@if ($maxWidthContainer>0) {
+			max-width: rem($containerWidth);
+			box-sizing: content-box;
+			margin: 0 auto;
+		}
+		@if ($maxWidthContainer>0) {
+			padding: 0 rem(math.div($containerPadding, 2));
+		} @else {
+			@include adaptiveValue("padding-right", math.div($containerPadding, 2), 15);
+			@include adaptiveValue("padding-left", math.div($containerPadding, 2), 15);
+		}
+	}
+} @else {
+	// По брейк-поинтам
+	[class*="__container"] {
+		margin: 0 auto;
+		@if ($maxWidthContainer>0) {
+			max-width: rem($maxWidthContainer);
+			box-sizing: content-box;
+		} @else {
+			@if ($containerPadding>0) {
+				padding: 0 rem(math.div($containerPadding, 2));
+			}
+		}
+		@media (max-width: $pc) {
+			max-width: rem(970);
+		}
+		@media (max-width: $tablet) {
+			max-width: rem(750);
+		}
+		@media (max-width: $mobile) {
+			max-width: none;
+			@if ($containerPadding>0 and $maxWidthContainer>0) {
+				padding: 0 rem(math.div($containerPadding, 2));
+			}
+		}
+	}
+}
+
+// Подключение базовых стилей, шаблонов (заготовок) и вспомогательных  классов
+// Для подключения/отключения конкретных стилей смотри base.scss
+@import "base";
+
+// Подключение стилей общих элементов проекта
+@import "common";
+
+//*****************************************************************************
+
+.page {
+	counter-reset: item;
+	// .page__section
+
+	&__section {
+		position: relative;
+		&::after {
+			position: absolute;
+			top: 50%;
+			@include adaptiveValue("right", 120, 7.5);
+			transform: translate(50%, -50%);
+			counter-increment: item;
+			content: counter(item, decimal-leading-zero);
+			color: #e3e6ec;
+			@include adaptiveValue("font-size", 60, 25);
+			font-weight: 700;
+			@media (max-width: $mobile) {
+				//top: rem(40);
+				@include adaptiveValue("top", 120, 20);
+				right: 50%;
+			}
+		}
+		// .page__section_center
+
+		&_center {
+			display: flex;
+			align-items: center;
+		}
+	}
+}
+
+//*****************************************************************************
+.screen-01 {
+	// .main__container
+	&__container {
+		padding-top: rem(20);
+		padding-bottom: rem(20);
+		@media (max-width: $mobile) {
+			padding-left: 0;
+			padding-right: 0;
+		}
+		@media (max-height: $mobile) {
+			padding-top: 0;
+			padding-bottom: 0;
+		}
+	}
+
+	&__section-header {
+		position: relative;
+		z-index: 1;
+	}
+
+	&__body {
+		position: relative;
+		@include adaptiveValue("padding-left", 240, 15);
+		@include adaptiveValue("padding-right", 240, 15);
+		padding-top: rem(155);
+		padding-bottom: rem(155);
+		&::after {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(28, 31, 37, 0.6);
+		}
+		@media (max-height: $mobileSmall) {
+			@include adaptiveValue("padding-top", 155, 75);
+			@include adaptiveValue("padding-bottom", 155, 75);
+		}
+	}
+
+	&__image {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: 1;
+	}
+}
+
+//*************************************************************************************
+
+.screen-02 {
+	// .screen-02__container
+	&__container {
+		display: flex;
+		align-items: flex-start;
+		min-height: 100vh;
+		gap: 10%;
+		@media (max-width: $mobile) {
+			display: block;
+			padding-top: rem(80);
+			gap: none;
+		}
+		@media (max-width: $mobileSmall) {
+			padding-top: rem(40);
+		}
+	}
+
+	// .screen-02__content
+	&__content {
+		flex: 0 1 45%;
+		align-self: center;
+		@media (max-width: $mobile) {
+			padding-bottom: rem(30);
+		}
+	}
+
+	// .screen-02__section-header
+	&__section-header {
+	}
+
+	// .screen-02__image
+	&__image {
+		flex: 0 1 45%;
+		& img {
+			width: 100%;
+			height: auto;
+			max-width: 560px;
+		}
+
+		@media (max-width: $mobile) {
+			display: flex;
+			justify-content: center;
+			& img {
+				height: auto;
+				max-height: 280px;
+				width: auto;
+			}
+		}
+	}
+}
+
+//***********************************************************************************
+.screen-03 {
+	display: flex;
+	@include adaptiveValue("gap", 240, 30);
+
+	@media (max-width: 1200px) {
+		@include adaptiveValue("gap", 120, 30);
+	}
+
+	@media (max-width: $mobileSmall) {
+		flex-direction: column;
+	}
+
+	// .screen-03__row
+
+	&__row {
+	}
+
+	// .screen-03__image
+
+	&__image {
+		width: 100%;
+		max-width: 480px;
+		overflow: hidden;
+		@media (max-width: $mobileSmall) {
+			max-width: 240px;
+		}
+		@media (max-width: 389px) {
+			max-width: 140px;
+		}
+		& img {
+			width: 100%;
+			height: auto;
+			object-fit: cover;
+		}
+	}
+
+	// .screen-03__content
+
+	&__content {
+		max-width: 480px;
+		align-self: center;
+		@media (max-width: 1200px) {
+			padding-right: rem(60);
+		}
+		@media (max-width: $mobileSmall) {
+			padding: 0 rem(15);
+		}
+	}
+
+	// .screen-03__section-header
+
+	&__section-header {
+	}
+
+	// .screen-03__value
+
+	&__value {
+	}
+}
+
+.value-screen-03 {
+	@include adaptiveValue("padding-top", 120, 40);
+	display: grid;
+	@include adaptiveValue("gap", 70, 25);
+	// .value-screen-03__item
+
+	&__item {
+		display: grid;
+		grid-template-columns: repeat(2, auto);
+		justify-content: space-between;
+		gap: rem(15);
+	}
+
+	// .value-screen-03__label
+
+	&__label {
+	}
+
+	// .value-screen-03__value
+
+	&__value {
+		color: $darkColor;
+		font-weight: 700;
+	}
+
+	// .value-screen-03__line
+
+	&__line {
+		grid-column: span 2;
+		background: rgba(28, 31, 37, 0.1);
+		height: rem(10);
+		span {
+			display: block;
+			background: $darkColor;
+			height: rem(10);
+			transition: width 1s ease;
+			width: 0;
+		}
+
+	}
+}
+
+//**************************************************************************************
+
+.screen-04 {
+	// .screen-04__container
+
+	&__container {
+		padding-top: rem(20);
+		padding-bottom: rem(20);
+	}
+
+	// .screen-04__section-header
+
+	&__section-header {
+		@include adaptiveValue("margin-bottom", 150, 25);
+	}
+
+	// .screen-04__advantages
+
+	&__advantages {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(rem(220), 1fr));
+		@include adaptiveValue("gap", 50, 20);
+	}
+}
+
+.advantages {
+	// .advantages__item
+
+	&__item {
+	}
+
+	// .advantages__icon
+
+	&__icon {
+		&:not(:last-child) {
+			@include adaptiveValue("margin-bottom", 26, 10);
+		}
+	}
+
+	// .advantages__title
+
+	&__title {
+		color: $darkColor;
+		font-weight: 700;
+		@include adaptiveValue("font-size", 30, 24);
+		line-height: math.div(38, 30);
+		&:not(:last-child) {
+			@include adaptiveValue("margin-bottom", 32, 10);
+		}
+	}
+
+	// .advantages__text
+
+	&__text {
+		line-height: math.div(45, 25);
+		@media (max-width: $mobileSmall) {
+			line-height: math.div(30, 25);
+		}
+	}
+}
+
+//**********************************************************************************
+
+.screen-05 {
+	// .screen-05__container
+
+	&__container {
+		display: flex;
+		min-height: 100vh;
+		gap: 10%;
+		@media (max-width: $mobile) {
+			flex-direction: column;
+			padding-top: rem(80);
+		}
+		@media (max-width: $mobileSmall) {
+			padding-top: rem(40);
+		}
+	}
+
+	// .screen-05__content
+
+	&__content {
+		flex: 0 1 50%;
+		align-self: center;
+		@media (max-width: $mobile) {
+			margin-bottom: rem(30);
+		}
+	}
+
+	// .screen-05__section-header
+
+	&__section-header {
+	}
+
+	// .screen-05__image
+
+	&__images {
+		flex: 0 1 50%;
+		display: grid;
+		grid-template-rows: repeat(2, 1fr);
+		@media (max-width: $mobile) {
+			display: flex;
+			justify-content: center;
+			flex-wrap: wrap;
+		}
+	}
+
+	&__image-ibg {
+		@media (max-width: $mobile) {
+			img {
+				position: relative;
+				width: auto;
+				height: auto;
+				max-width: 280px;
+				@media (max-width: 389px) {
+					max-width: 220px;
+				}
+			}
+		}
+	}
+}
+
+//*************************************************************************************
+
+.screen-06 {
+	// .screen-06__container
+	&__container {
+		padding-top: rem(20);
+		padding-bottom: rem(20);
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		@include adaptiveValue("gap", 60, 30);
+		@media (max-width: $tablet) {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+	}
+
+	// .screen-06__services
+	&__services {
+		flex: 0 1 60%;
+	}
+
+	// .screen-03__section-header
+	&__section-header {
+		flex: 0 1 40%;
+	}
+}
+
+//**************************************************************************************
+
+.screen-07 {
+
+
+	//.screen-07__container
+	&__container {
+		display: flex;
+		min-height: 100vh;
+		@media (max-width: $mobile) {
+			flex-direction: column;
+		}
+	}
+
+	// .screen-07__services
+	&__services {
+		flex: 0 1 50%;
+		align-self: center;
+		padding-top: rem(20);
+		padding-bottom: rem(20);
+		@media(max-width: $mobile) {
+			padding-top: rem(60);
+		}
+	}
+
+	// .screen-07__image-ibg
+	&__image {
+		flex: 0 1 50%;
+		position: relative;
+		img {
+			max-width: 100%;
+		}
+		@media(min-width: $mobile) {
+			@include adaptiveValue('left', 240, 15);
+			padding-left: rem(20);
+			img {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				top: 0;
+				left: 0;
+				object-fit: cover;
+			}
+		}
+	}
+}
+
+//**********************************************************************************
+
+.screen-08 {
+
+	// .screen-08__container
+
+	&__container {
+		display: flex;
+		@include adaptiveValue('gap', 240, 20);
+		min-height: 100vh;
+		@media (max-width: $mobile) {
+			flex-direction: column-reverse;
+			min-height: auto;
+		}
+	}
+
+	// .screen-08__image
+
+	&__image {
+		
+		flex: 0 1 50%;
+		position: relative;
+		display: flex;
+		justify-content: center;
+		img {
+			max-width: 240px;
+		}
+		@media(min-width: $mobile) {
+			display: block;
+			img {
+				position: absolute;
+				max-width: 100%;
+				width: 100%;
+				height: 100%;
+				top: 0;
+				left: 0;
+				object-fit: cover;
+			}
+		}
+	}
+
+	// .screen-08__content
+
+	&__content {
+		flex: 0 1 50%;
+		align-self: center;
+		padding-top: rem(20);
+		padding-bottom: rem(20);
+		@media(max-width: $mobile) {
+			padding-top: rem(60);
+		}
+	}
+
+	// .screen-08__section-header
+
+	&__section-header {
+		@include adaptiveValue("margin-bottom", 190, 20);
+	}
+
+	// .screen-08__projects
+
+	&__projects {
+		display: flex;
+		@include adaptiveValue("gap", 90, 45);
+	}
+}
+
+.projects {
+	// .projects__item
+
+	&__item {
+	}
+
+	// .projects__value
+
+	&__value {
+		color: $darkColor;
+		font-weight: 700;
+		@include adaptiveValue("font-size", 60, 30);
+		margin-bottom: rem(16);
+	}
+
+	// .projects__label
+
+	&__label {
+		@include adaptiveValue("font-size", 25, 18);
+	}
+}
+
+//***********************************************************************************
+
+
+.screen-09 {
+
+	// .screen-09__container
+
+	&__container {
+		display: flex;
+		min-height: 100vh;
+		flex-direction: row-reverse;
+		@media(max-width: $tablet) {
+			padding-right: 0;
+			padding-left: 0;
+		}
+
+	}
+
+	// .screen-09__section-header
+
+	&__section-header {
+		flex: 0 1 33.33%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		.section-header {
+			min-height: 100vh;
+			writing-mode: vertical-rl;
+			text-align: center;
+			transform: rotate(-180deg);
+			//text-orientation: 
+		}
+		.section-header__title {
+			@include adaptiveValue('margin-right', 32, 15);
+		}
+		
+	}
+
+	// .screen-09__colum
+
+	&__colum {
+		flex: 0 1 33.33%;
+		min-height: 100vh;
+		display: flex;
+		flex-direction: column;
+		&:last-child  {
+			flex-direction: column-reverse;
+			.colum-screen-09__body {
+				text-align: left;
+			}
+		}
+
+		
+	}
+}
+
+.colum-screen-09 {
+	// .colum-screen-09__body
+
+	&__body {
+		height: 50%;
+		display: flex;
+    	flex-direction: column;
+    	justify-content: center;
+		@include adaptiveValue('gap', 32, 15);
+		text-align: right;
+		
+	}
+
+
+	// .colum-screen-09__title
+
+	&__title {
+		@include adaptiveValue("font-size", 30, 18);
+	}
+
+	// .colum-screen-09__text
+
+	&__text {
+		@include adaptiveValue("font-size", 25, 15);
+	}
+
+	// .colum-screen-09__image-ibg
+
+	&__image-ibg {
+		width: 100%;
+		height: 50%
+	}
+}
+
+//*************************************************************************************
+
+.screen-10 {
+
+	// .screen-10__container
+
+	&__container {
+		display: flex;
+		min-height: 100vh;
+		@media(max-width: $mobile) {
+			flex-direction: column;
+			padding-top: rem(20);
+			padding-bottom: rem(20);
+		}
+	}
+
+	// .screen-10__item
+
+	&__item {
+		display: flex;
+		flex-direction: column;
+		flex: 0 1 33.33%;
+		@media(max-width: $mobile) {
+			flex-direction: column-reverse;
+			gap: rem(15);
+		}
+	}
+
+	// .screen-10__image
+
+	&__image-ibg {
+		flex-grow: 0;
+		width: 100%;
+		height: 65%;
+		&:not(:last-child) {
+			@include adaptiveValue('margin-bottom', 60, 20);
+		}
+		@media(max-width: $mobile) {
+			padding-bottom: 50%;
+		}
+	}
+
+	// .screen-10__title
+
+	&__title {
+		padding-right: rem(15);
+		&:not(:last-child) {
+			@include adaptiveValue('margin-bottom', 32, 15);
+		}
+	}
+
+	// .screen-10__text
+
+	&__text {
+		padding-right: rem(15);
+	}
+}
+
+//****************************************************************************************
+.screen-11 {
+
+	position: relative;
+	
+	&::before {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 37%;
+		height: 100%;
+		background: rgba(196, 196, 196, 0.30);
+		z-index: 1;
+	}
+	// .screen-11__container
+
+	&__container {
+		z-index: 2;
+		padding-top: rem(50);
+		padding-bottom: rem(50);
+		display: flex;
+		flex-direction: row-reverse;
+		@include adaptiveValue('gap', 240, 30);
+
+
+		@media(max-width: $mobile) {
+			flex-direction: column;
+			padding-top: rem(20);
+			padding-bottom: rem(20);
+		}
+	}
+
+	// .screen-11__items
+
+	&__items {
+		align-self: center;
+	}
+
+	// .screen-11__item
+
+	&__item {
+		&:not(:last-child) {
+			@include adaptiveValue('margin-bottom', 60, 20);
+		}
+	}
+
+	// .screen-11__title
+
+	&__title {
+		&:not(:last-child) {
+			@include adaptiveValue('margin-bottom', 32, 15);
+		}
+	}
+
+	// .screen-11__text
+
+	&__text {
+	}
+
+	// .screen-11__image
+
+	&__image {
+		align-self: center;
+		img {
+			max-width: 100%;
+			height: auto;
+		}
+	}
+}
+
+//******************************************************************************************
+
+.screen-12 {
+
+	// .screen-12__container
+
+	&__container {
+		padding-top: rem(20);
+		padding-bottom: rem(20);
+		@media (max-width: $mobile) {
+			padding-left: 0;
+			padding-right: 0;
+		}
+		@media (max-height: $mobile) {
+			padding-top: 0;
+			padding-bottom: 0;
+		}
+	}
+
+	// .screen-12__body
+
+	&__body {
+		position: relative;
+		@include adaptiveValue("padding-left", 240, 15);
+		@include adaptiveValue("padding-right", 240, 15);
+		padding-top: rem(155);
+		padding-bottom: rem(155);
+		&::after {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(28, 31, 37, 0.6);
+		}
+		@media (max-height: $mobileSmall) {
+			@include adaptiveValue("padding-top", 155, 75);
+			@include adaptiveValue("padding-bottom", 155, 75);
+		}
+	}
+
+	// .screen-12__items
+
+	&__items {
+		position: relative;
+		z-index: 1;
+		display: flex;
+		//@include adaptiveValue('gap', 180, 30);
+		justify-content: space-between;
+		gap: 30px;
+		@media(max-width: $mobileSmall) {
+			flex-direction: column;
+		}
+	}
+
+	// .screen-12__item
+
+	&__item {
+		color: #E3E6EC;
+		text-align: center;
+		
+	}
+
+	// .screen-12__value
+
+	&__value {
+		@include adaptiveValue("font-size", 60, 28);
+        font-weight: 700;
+		line-height: math.div(75, 60);
+	}
+
+	// .screen-12__label
+
+	&__label {
+	}
+
+	// .screen-12__image
+
+	&__image {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: 1;
+	}
+}
+
+//***********************************************************************************************
